@@ -31,7 +31,6 @@ while running:
     moved = False
     
     if AI_HELP and model:
-        # 1. Create the observation in the correct dictionary format with a batch dimension of 1
         obs_board = np.reshape(state["board"], (1, GRID_SIZE, GRID_SIZE, 1)).astype(np.uint8)
         obs_vector = np.reshape(state["next_colors"], (1, SPAWN_COUNT)).astype(np.uint8)
         observation = {
@@ -39,26 +38,21 @@ while running:
             "vector_features": obs_vector
         }
         
-        # 2. Manually create the action mask
         flat_board = state['board'].flatten()
         start_mask = flat_board != 0
         end_mask = flat_board == 0
         
-        # Handle edge case where no moves are possible
+        # Edge case where no moves are possible
         if not np.any(start_mask) or not np.any(end_mask):
             start_mask = np.zeros(GRID_SIZE**2, dtype=bool)
             end_mask = np.zeros(GRID_SIZE**2, dtype=bool)
             start_mask[0] = True # Make a dummy valid move
             end_mask[0] = True
         
-        # Combine masks and add a batch dimension
         action_masks = np.concatenate([start_mask, end_mask])
         action_masks = np.expand_dims(action_masks, axis=0)
-
-        # 3. Predict using both the observation AND the action mask
         actions, _ = model.predict(observation, action_masks=action_masks, deterministic=True)
 
-        # 4. Un-batch the result: predict returns a batch of actions, so we take the first one
         action = actions[0]
 
         sr, sc = divmod(int(action[0]), GRID_SIZE)

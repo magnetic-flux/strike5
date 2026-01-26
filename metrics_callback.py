@@ -22,7 +22,6 @@ class MetricsCallback(BaseCallback):
 
 
     def _on_step(self) -> bool:
-        # We assume a single environment for detailed info logging
         info = self.locals["infos"][0]
         
         self.moves += 1
@@ -67,7 +66,6 @@ class MetricsCallback(BaseCallback):
             else 0
         )
 
-        # Log metrics to TensorBoard
         self.logger.record("Telemetry/1. Average clears per game", self.clears / total_games)
         self.logger.record("Telemetry/2. Average reward per game", np.mean(self.game_rewards))
         self.logger.record("Telemetry/3. Fraction of moves that are valid with no clear", self.validity_0s / self.moves if self.moves > 0 else 0)
@@ -78,8 +76,6 @@ class MetricsCallback(BaseCallback):
         self.logger.record("Telemetry/8. Fraction of moves that are repeat moves", self.num_repeat_moves / self.moves if self.moves > 0 else 0)
         self.logger.record("Telemetry/9. Average game length", np.mean(self.game_lengths_valid_moves))
 
-
-        # Reset all rollout counters
         self.moves = 0
         self.clears = 0
         self.validity_0s = 0

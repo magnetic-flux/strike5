@@ -6,7 +6,7 @@ from collections import deque
 
 GRID_SIZE = 9
 SPAWN_COUNT = 3
-LINE_LENGTH = 3
+LINE_LENGTH = 5
 
 CELL_SIZE = 60
 MARGIN = 2
@@ -215,6 +215,7 @@ def draw_state(screen, font, state, selected=None, highlight=None, anim_board=No
             yoff + MARGIN + sr * (CELL_SIZE + MARGIN),
             CELL_SIZE, CELL_SIZE)
         pygame.draw.rect(screen, HEADER_FONT_COLOR, rect, 3)
+    
     # Highlight destination (animation)
     if highlight:
         hr, hc = highlight
